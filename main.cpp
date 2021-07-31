@@ -3,19 +3,18 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include "Hash_Int.h"
 #include "Movie.h"
-
-
+#include "Hash_Int.h"
 using namespace std;
 
 
 void trim(string &str);
 vector<string> SplitString(string s);
 
-int main()
-{
+int main() {
+
     ifstream file("MovieListRatings.csv");//filepath from local files
+
 
     vector<movie> movieCollection;
 
@@ -48,7 +47,6 @@ int main()
             getline(s,date,',');
 
             vector<string> genreVect;
-
             string genres;
             getline(s,genres,',');
             genreVect = SplitString(genres);
@@ -80,9 +78,6 @@ int main()
             //we can switch this with any insertion of a data structure I just have it at vector for now
 
         }
-
-
-
 
     }
 
