@@ -61,3 +61,17 @@ movie BST::searchTitle(string title_, Node*& n)
     else if (title_ > node->movie.getTitle())
         searchTitle(title_, node->right);
 }
+
+void BST::searchGenre(string genre, Node*& n, vector<movie>& movieGenres)//finds movies with a given genre using an inorder traversal
+{
+    if (n == null)
+        return;
+    searchGenre(genre, n->left, movieGenres);
+    
+    for(int i = 0; i < n->movie->getGenreVect().size(); i++){
+        if(n->movie->getGenreVect.at(i) == genre){
+            movieGenres.push_back(n->movie);
+        }
+    }
+    searchGenre(genre, n->right, movieGenres);
+}
