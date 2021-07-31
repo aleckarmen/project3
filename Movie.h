@@ -1,92 +1,68 @@
-//
-// Created by Alec on 7/30/2021.
-//
-
-#ifndef BESTFLIX_MOVIE_H
-#define BESTFLIX_MOVIE_H
-
-#endif //BESTFLIX_MOVIES_H
-//
-// Created by Alec on 7/30/2021.
-//
-
+#pragma once
 #include <vector>
 #include <string>
-#pragma once
 using namespace std;
 
-class Movie
+class movie
 {
-public:
-
 private:
-    int year,duration,budget,votes;
-    string imdb_title_id,title,original_title;
-    double avg_vote,usa_gross_income,worlwide_gross_income,metascore;
-
-
-
-
-
-
+    int year, duration;
+    string title, genre, date, country;
 public:
+    //Constructors
     movie();
-    movie(string title_, string imdb_title_id_);
-
-
-    string getImdb_title_id();
-    void setImdb_title_id(string imdb_title_id_);
-
+    movie(string title, string genre, string date, string country, int duration, int year);
+    //Getters
+    string getDate();
     string getTitle();
-    void setTitle(string title_);
-
-
-
-
-
-
-
+    string getGenre();
+    string getCountry();
+    int getYear();
+    int getDuration();
 
 };
 
 movie::movie()
 {
     title = "";
-
 }
 
-movie::movie(string title_, string imdb_title_id_)
+movie::movie(string title_, string genre_, string date_, string country_, int duration_, int year_)
 {
     title = title_;
-
-
-
-
+    genre = genre_;
+    date = date_;
+    country = country_;
+    duration = duration_;
+    year = year_;
 }
-
-
-
-
-
 
 string movie::getTitle()
 {
     return title;
 }
-void movie::setTitle(string title_)
+
+string movie::getDate()
 {
-    this->title = title_;
+    return date;
 }
 
-
-string movie::getImdb_title_id()
+string movie::getGenre()
 {
-    return imdb_title_id;
-}
-void movie::setImdb_title_id(string imdb_title_id_)
-{
-    this->imdb_title_id = imdb_title_id_;
+    return genre;
 }
 
+string movie::getCountry()
+{
+    return country;
+}
 
+int movie::getYear()
+{
+    return year;
+}
 
+int movie::getDuration()
+{
+    return duration;
+}
