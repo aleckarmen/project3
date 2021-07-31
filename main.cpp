@@ -8,43 +8,53 @@
 
 using namespace std;
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
 
-    fstream file("C://Users//Alec//Downloads//archive");
+int main() {
+
+
+    fstream file("C://Users//Alec//Downloads//archive");//change filepath 
 
     if (file.is_open())
     {
         string nul;
-        getline(file,nul);
+        getline(file,nul);//gets rid of header
         string line;
-
+        vector<movie> movieCollection;
 
 
         while(getline(file, line))
         {
-            Movie currentMovie;
+
             istringstream s(line);
-
-
-
-            string titleID;
-            getline(s, titleID,','); //need something for strings and ints?
-            currentMovie.setImdb_title_id(titleID);
 
             string title;
             getline(s, title,',');
-            currentMovie.setTitle(title);
-            //...etc
 
+            string stringYear;
+            getline(s,stringYear,',');
+            int year = stoi(stringYear);
 
+            string date;
+            getline(s,date,',');
+
+            string genre;
+            getline(s,genre,',');
+
+            string durationString;
+            getline(s,durationString,',');
+            int duration = stoi(durationString);
+
+            string country;
+            getline(s,country,',');
+
+            movie currentMovie(title,genre,date,country,duration,year);
+
+            movieCollection.push_back(currentMovie);//vector that stores the movie objects
+            //we can switch this with any insertion of a data structure I just have it at vector for now
 
         }
 
     }
-    file.close();
-
-
 
     return 0;
 }
