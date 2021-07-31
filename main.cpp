@@ -15,15 +15,7 @@ vector<string> SplitString(string s);
 
 int main()
 {
-
-
-    cout << "hello world" << endl;
-
-
-
-    fstream open("NewMovieList.csv", ios::out | ios::app);
-    fstream file("NewMovieList.csv");//filepath from local files
-
+    ifstream file("MovieListRatings.csv");//filepath from local files
 
     vector<movie> movieCollection;
 
@@ -55,42 +47,11 @@ int main()
             string date;
             getline(s,date,',');
 
-
-            /*
-            int quoteCount = 0;
-            vector<string> genreVect;
-            while (quoteCount <2)
-            {
-
-                string genre;
-                getline(s,genre,',');//HERE WE NEED TO FIGURE OUT COMMA IN STRING PREVENTING OUR DELIMITER
-                if(genre.find('"') != string::npos) //if theres a quote in this genre pulled
-                {
-                    quoteCount++;
-                    //trim the quote out
-                }
-                cout << "genre: "<<genre << endl;
-                genreVect.push_back(genre);
-
-
-
-
-            }
-*/
-
             vector<string> genreVect;
 
             string genres;
             getline(s,genres,',');
-
-
             genreVect = SplitString(genres);
-
-
-            //cout << "genres: " <<genre << endl;
-
-
-
 
             string durationString;
             getline(s,durationString,',');
