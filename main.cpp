@@ -101,8 +101,17 @@ int main()
             string country;
             getline(s,country,',');
 
+            string averageVotes;
+            getline(s,averageVotes,',');
+            float avgVotes = stof(averageVotes);
 
-            movie currentMovie = movie(title,genres,date,country,duration,year, genreVect);
+            string totVotes;
+            getline(s,totVotes,',');
+            int totalVotes = stoi(totVotes);
+
+
+
+            movie currentMovie = movie(title,genres,date,country,duration,year, genreVect, totalVotes, avgVotes);
             count++;
 
 
