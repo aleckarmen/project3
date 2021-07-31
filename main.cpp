@@ -3,17 +3,27 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include "Hash_Int.h"
 #include "Movie.h"
+
+
 using namespace std;
 
 
 void trim(string &str);
 vector<string> SplitString(string s);
 
-int main() {
+int main()
+{
 
-    
-    ifstream file("MovieListRatings.csv");//filepath from local files
+
+    cout << "hello world" << endl;
+
+
+
+    fstream open("NewMovieList.csv", ios::out | ios::app);
+    fstream file("NewMovieList.csv");//filepath from local files
+
 
     vector<movie> movieCollection;
 
@@ -25,6 +35,8 @@ int main() {
         getline(file,nul);//gets rid of header
         getline(file,nul);
         string line;
+
+
 
         while(getline(file, line))
         {
@@ -43,12 +55,42 @@ int main() {
             string date;
             getline(s,date,',');
 
+
+            /*
+            int quoteCount = 0;
+            vector<string> genreVect;
+            while (quoteCount <2)
+            {
+
+                string genre;
+                getline(s,genre,',');//HERE WE NEED TO FIGURE OUT COMMA IN STRING PREVENTING OUR DELIMITER
+                if(genre.find('"') != string::npos) //if theres a quote in this genre pulled
+                {
+                    quoteCount++;
+                    //trim the quote out
+                }
+                cout << "genre: "<<genre << endl;
+                genreVect.push_back(genre);
+
+
+
+
+            }
+*/
+
             vector<string> genreVect;
 
             string genres;
             getline(s,genres,',');
 
+
             genreVect = SplitString(genres);
+
+
+            //cout << "genres: " <<genre << endl;
+
+
+
 
             string durationString;
             getline(s,durationString,',');
@@ -59,37 +101,42 @@ int main() {
             string country;
             getline(s,country,',');
 
-            string averageVotes;
-            getline(s,averageVotes,',');
-            float avgVotes = stof(averageVotes);
 
-            string totVotes;
-            getline(s,totVotes,',');
-            int totalVotes = stoi(totVotes);
-
-
-
-            movie currentMovie = movie(title,genres,date,country,duration,year, genreVect, totalVotes, avgVotes);
+            movie currentMovie = movie(title,genres,date,country,duration,year, genreVect);
             count++;
+
 
             movieCollection.push_back(currentMovie);//vector that stores the movie objects
             //we can switch this with any insertion of a data structure I just have it at vector for now
+
         }
+
+
+
+
     }
 
     cout << "Count: " << count << endl;
-//
-//    cout << movieCollection[1].getGenreVect().size() << " is the size" << endl;
-//    cout << "First movie genre in list:" << movieCollection[1].getGenreVect()[4] << endl;
-//    for (int i = 0; i < movieCollection[3].getGenreVect().size(); i++)
-//    {
-//        cout << movieCollection[3].getGenreVect()[i] << endl;
-//    }
-//    cout << "First movie genre list:" << movieCollection[1].getGenreVect()[1] << endl;
-//
-//
-//
-//    cout << "Last movie in list:" << movieCollection[movieCollection.size()-1].getGenre() << endl;
+    int movieNum = 3;
+    for (int i = 0; i < movieCollection[movieNum].getGenreVect().size(); i++)
+    {
+        cout << movieCollection[movieNum].getGenreVect()[i] << endl;
+    }
+    cout << "First movie genre list:" << movieCollection[1].getGenreVect()[1] << endl;
+    cout << "Last movie in list:" << movieCollection[movieCollection.size()-1].getGenre() << endl;
+
+    Hash_Int tempHash = Hash_Int(50, 2000);
+    for (int i = 0; i < 800; i++ )
+    {
+        tempHash.Insert( movieCollection[i*10]);
+    }
+    tempHash.displayHash();
+
+
+    //cout << "What "
+
+
+
     return 0;
 }
 
@@ -108,7 +155,7 @@ vector<string> SplitString(string s)
             i++;
         }
         else
-        {
+            {
             temp.push_back(s[i]);//temp is item
         }
 
@@ -117,6 +164,7 @@ vector<string> SplitString(string s)
 
     return v;
 }
+
 
 void trim(string &str)
 {
