@@ -45,7 +45,7 @@ void BST::insert(movie& m, Node*& n)
     else if (m.getTitle() < n->movie.getTitle())
         insert(m, n->left);
     else if (m.getTitle() >= n->movie.getTitle())
-        insert(m, n->left);
+        insert(m, n->right); // changed from left to right
 }
 
 movie BST::searchTitle(string title_, Node*& n)
