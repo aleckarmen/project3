@@ -7,15 +7,16 @@ class movie
 {
 private:
     int year, duration;
-    string title, genre, date, country;
+    string title, date, country;
+    vector<string> genres;
 public:
     //Constructors
     movie();
-    movie(string title, string genre, string date, string country, int duration, int year);
+    movie(string title, vector<string> genres, string date, string country, int duration, int year);
     //Getters
     string getDate();
     string getTitle();
-    string getGenre();
+    vector<string> getGenre();
     string getCountry();
     int getYear();
     int getDuration();
@@ -27,10 +28,10 @@ movie::movie()
     title = "";
 }
 
-movie::movie(string title_, string genre_, string date_, string country_, int duration_, int year_)
+movie::movie(string title_, vector<string> genres_, string date_, string country_, int duration_, int year_)
 {
     title = title_;
-    genre = genre_;
+    genres = genres_;
     date = date_;
     country = country_;
     duration = duration_;
@@ -47,9 +48,9 @@ string movie::getDate()
     return date;
 }
 
-string movie::getGenre()
+vector<string> movie::getGenre()
 {
-    return genre;
+    return genres;
 }
 
 string movie::getCountry()

@@ -53,8 +53,21 @@ int main() {
             getline(s,date,',');
 
             string genre;
-            getline(s,genre,',');  //HERE WE NEED TO FIGURE OUT COMMA IN STRING PREVENTING OUR DELIMITER
-            cout << "genre: "<<genre << endl;
+            vector<string> genres;
+            while (!isdigit(stream.peek()))
+            {
+                getline(s,genre,',');  //HERE WE NEED TO FIGURE OUT COMMA IN STRING PREVENTING OUR DELIMITER
+                
+                if (genre[0] == '\"')
+                    genre.erase(genre[0]);
+                if (genre[genre.size() - 1] == '\"')
+                    genre.erase(genre[genre.size() - 1]);
+
+                genres.push_back(genre);
+            }
+            cout << "genre(s): ";
+            for (auto i : genres)
+                cout << i << " ";
 
             string durationString;
             getline(s,durationString,',');
@@ -66,7 +79,7 @@ int main() {
             getline(s,country,',');
 
 
-            movie currentMovie(title,genre,date,country,duration,year);
+            movie currentMovie(title,genres,date,country,duration,year);
             count++;
 
 
