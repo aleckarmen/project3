@@ -15,13 +15,14 @@ class Hash_Int
 
 private:
     int numBuckets;
+    int modFactor;
 
     vector<movie> *table;  //points to array that contains buckets
 
 public:
     void displayHash(); //delete later
 
-    Hash_Int(int tables);
+    Hash_Int(int buckets, int modFactor);
 
     void Insert(movie m);
 
@@ -32,9 +33,10 @@ public:
 };
 
 
-Hash_Int::Hash_Int(int buckets) //int hash constructors
+Hash_Int::Hash_Int(int buckets, int modFactor_) //int hash constructors
 {
     numBuckets = buckets;
+    modFactor = modFactor_;
     table = new vector<movie>[numBuckets];
 }
 
