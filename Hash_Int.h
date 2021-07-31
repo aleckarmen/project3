@@ -1,7 +1,3 @@
-//
-// Created by Alec on 7/31/2021.
-//
-
 #ifndef BESTFLIX_HASH_H
 #define BESTFLIX_HASH_H
 #include "Movie.h"
@@ -30,6 +26,10 @@ public:
 
     int hashify(int value);
 
+    vector<movie> searchMoviesFromYear(int year); //returns all movies made in that year
+
+
+
 };
 
 
@@ -53,6 +53,13 @@ int Hash_Int::hashify(int year)
 {
     return (year % numBuckets);
 }
+
+vector<movie> Hash_Int::searchMoviesFromYear(int year)
+{
+    vector<movie> toReturn = table[hashify(year)];
+    return toReturn;
+}
+
 
 void Hash_Int::displayHash() //remove later
 {
