@@ -115,12 +115,10 @@ int main()
 
     cout << "Size: " << tempHash.getSize() << endl;
 
-
+/*
     cout << "What is the oldest movie (minimum)" << endl;
     int minYear;
     cin >> minYear;
-
-
     vector<movie> minMovieVect; //we will end up with a vector of all movies past that date
     for (int i = minYear; i <= 2020; i++)
     {
@@ -132,14 +130,12 @@ int main()
         }
 
     }
-
     cout << "All movies made past this date are: " << endl;
-
     for (int i = 0; i< minMovieVect.size();i++)
     {
         cout << minMovieVect[i].getTitle() << ",made: " << minMovieVect[i].getYear() << endl;
     };
-
+*/
 
     return 0;
 }
