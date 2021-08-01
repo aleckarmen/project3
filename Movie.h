@@ -24,6 +24,7 @@ public:
     int getDuration();
     int getNumVotes();
     float getAverageVotes();
+    void printMovie();
 };
 
 movie::movie()
@@ -88,4 +89,24 @@ int movie::getNumVotes()
 float movie::getAverageVotes()
 {
     return averageVotes;
+}
+
+void movie::printMovie()
+{
+    cout << "---------------------------------------"<< endl;
+    cout << "Title: \t\t" << title << endl;
+    cout << "Year: \t\t" << year << endl;
+    cout << "Genre(s): \t";
+    for (int i = 0; i < genres.size(); i++)
+    {
+        cout << genres[i];
+        if (i != genres.size() - 1)
+            cout << ", ";
+    }
+    cout << endl;
+    cout << "Country: \t" << country << endl;
+    cout << "Duration: \t" << duration << endl;
+    cout << "Total Votes: \t" << votes << endl;
+    cout << "Average Vote: \t" << averageVotes << endl;
+    cout << "---------------------------------------"<< endl;
 }
