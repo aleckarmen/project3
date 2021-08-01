@@ -1,0 +1,48 @@
+vector<movie> findBestMovies(vector<movie> movieList, int numMoviesToSuggest)  //returns top 5 movies of lowest rated out of our list
+{
+    vector<movie> topMovies;
+
+
+    for (int i = 0; i < numMoviesToSuggest; i++)//fill top movies with first 5 available
+    {
+        topMovies.push_back(movieList[i]);
+    }
+
+    int lowestIndex = 0;
+    for (int i = 0; i < topMovies.size(); i++) // find index of lowest rate one
+    {
+        if (topMovies[i].getAverageVotes() < topMovies[lowestIndex].getAverageVotes())
+        {
+            lowestIndex = i;
+        }
+    }
+
+
+    for(int i = numMoviesToSuggest; i < movieList.size(); i++) //loop through all movies and assign higher ones into top movies
+    {
+        if(movieList[i].getAverageVotes() > topMovies[lowestIndex].getAverageVotes()) //if this movie in question is better rated
+        {
+            topMovies[lowestIndex] = movieList[i]; //replace lowest movie in topmovies with it
+            lowestIndex = findLowestRatedMovieIndex(topMovies); //set lowest index  to next lowest after switch
+        }
+    }
+
+    return topMovies;
+}
+
+
+int findLowestRatedMovieIndex(vector<movie> movieVect)
+{
+
+    int lowestIndex = 0;
+    for (int i = 0; i < movieVect.size(); i++) // find index of lowest rate one
+    {
+        if (movieVect[i].getAverageVotes() < movieVect[lowestIndex].getAverageVotes())
+        {
+            lowestIndex = i;
+        }
+    }
+
+
+    return lowestIndex;
+}
