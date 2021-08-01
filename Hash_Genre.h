@@ -73,10 +73,9 @@ void Hash_Genre::Insert(movie m)
         genreString += (m.getGenreVect()[i]);
     }
 
-    cout << "String, its genres and its genre Hash: " << genreString << ", " << hashify(genreString) << endl << endl;
+    //cout << "String, its genres and its genre Hash: " << genreString << ", " << hashify(genreString) << endl << endl; //this can see if some ascii sums accidentally overlap
 
     int placeToPutIt = hashify(genreString);
-    cout << "putting in spot " << placeToPutIt << endl;
     table[placeToPutIt].push_back(m);
     size++;
 
