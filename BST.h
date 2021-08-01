@@ -9,7 +9,7 @@ struct Node
     Node* left;
     Node* right;
 
-    Node(movie& m)
+    Node(::movie& m)
     {
         movie = m;
         left = right = nullptr;
@@ -30,6 +30,7 @@ public:
     movie* getMovie();
     void insert(movie& m, Node*& n);
     movie searchTitle(string title_, Node*& n);
+    void searchGenre(string genre, Node*& n, vector<movie>& movieGenres);
 };
 
 BST::BST()
@@ -64,12 +65,12 @@ movie BST::searchTitle(string title_, Node*& n)
 
 void BST::searchGenre(string genre, Node*& n, vector<movie>& movieGenres)//finds movies with a given genre using an inorder traversal
 {
-    if (n == null)
+    if (n == nullptr)
         return;
     searchGenre(genre, n->left, movieGenres);
     
-    for(int i = 0; i < n->movie->getGenreVect().size(); i++){
-        if(n->movie->getGenreVect.at(i) == genre){
+    for(int i = 0; i < n->movie.getGenreVect().size(); i++){
+        if(n->movie.getGenreVect().at(i) == genre){
             movieGenres.push_back(n->movie);
         }
     }
