@@ -25,6 +25,8 @@ public:
     int getNumVotes();
     float getAverageVotes();
     void printMovie();
+
+    bool operator==(movie& rhs);
 };
 
 movie::movie()
@@ -109,4 +111,13 @@ void movie::printMovie()
     cout << "Total Votes: \t" << votes << endl;
     cout << "Average Vote: \t" << averageVotes << endl;
     cout << "---------------------------------------"<< endl;
+}
+
+// equality operator
+bool movie::operator==(movie& rhs)
+{
+    if (this->title == rhs.getTitle())
+        return true;
+    else 
+        return false;
 }

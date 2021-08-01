@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-
+#include <stack>
 #include "Movie.h"
 
 struct Node
@@ -34,6 +34,8 @@ public:
     void searchYear(int year, Node*& n, vector<movie>& v);
     void inorderPrint(Node*& n);
     void searchGenreMinYear(string genre, int year, Node*& n, vector<movie>& m);
+    bool contains(vector<movie*>& v, movie*& m);
+    vector<movie*> topFiveByGenre(string genre, int minYear, Node*& n);
 };
 
 BST::BST()
@@ -110,7 +112,7 @@ void searchGenreMinYear(string genre, int year, Node*& n, vector<movie>& m)
     if(n == nullptr)
         return;
 
-    searchGenreMinYear(genre, year, Node*& n->left, vector<movie>& m);
+    searchGenreMinYear(genre, year,n->left,m);
 
     if(n->movie.getYear() == year){
         for(int i = 0; i < n->movie.getGenreVect().size(); i++){
@@ -119,5 +121,55 @@ void searchGenreMinYear(string genre, int year, Node*& n, vector<movie>& m)
         }
     }
     
-    searchGenreMinYear(genre, year, Node*& n->right, vector<movie>& m);
+    searchGenreMinYear(genre, year, n->right,m);
+}
+
+bool BST::contains(vector<movie*>& v, movie*& m)
+{
+    for (auto i : v)
+        if (i == m) return true;
+    return false;
+}
+
+vector<movie*> BST::topFiveByGenre(string genre, int minYear, Node*& n)
+{
+    vector<movie*> topFive;
+    stack<Node*> s;
+    Node* node = n;
+    while (node || !s.empty()) 
+    {
+        while (node) 
+        {
+            s.push(node);
+            node = node->left;
+        }
+        node = s.top();
+        s.pop();
+        movie* m = &node->movie;
+        if (m->getYear() >= minYear && m->getGenre() == genre) //m->getGenre().find(genre) != string::npos)
+        {
+            if (topFive.size() < 5)
+                topFive.push_back(m);
+            else if (topFive.size() == 5)
+            {
+                float min = 10.1;
+                int minIndex;
+                for (int i = 0; i < topFive.size(); i++)
+                {
+                    if (min > topFive[i]->getAverageVotes())
+                    {
+                        min = topFive[i]->getAverageVotes();
+                        minIndex = i;
+                    }
+                    if (m->getAverageVotes() > topFive[minIndex]->getAverageVotes())
+                    {
+                        if (!contains(topFive, m))
+                            topFive[minIndex] = m;
+                    }
+                }
+            }   
+        }
+        node = node->right;
+    }
+    return topFive;
 }
