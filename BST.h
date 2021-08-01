@@ -90,3 +90,15 @@ void BST::searchYear(int year, Node*& n, vector<movie>& v)
 
     searchYear(year, n->right, v);
 }
+
+void BST::inorderPrint(Node *&n) {//used for testing
+    if (n == nullptr)
+        return;
+
+    inorderPrint(n->left);
+
+    cout << n->movie.getTitle() << endl;
+
+    inorderPrint(n->right);
+
+}
