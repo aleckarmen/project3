@@ -1,8 +1,8 @@
-#ifndef BESTFLIX_HASH_H
-#define BESTFLIX_HASH_H
+#ifndef BESTFLIX_HASH_Int
+#define BESTFLIX_HASH_Int
 #include "Movie.h"
 
-#endif //BESTFLIX_HASH_H
+#endif //BESTFLIX_HASH_Int
 
 using namespace std;
 
@@ -10,6 +10,7 @@ class Hash_Int
 {
 
 private:
+    int size;
     int numBuckets;
     int modFactor;
 
@@ -19,6 +20,8 @@ public:
     void displayHash(); //delete later
 
     Hash_Int(int buckets, int modFactor);
+
+    int getSize();
 
     void Insert(movie m);
 
@@ -35,6 +38,7 @@ public:
 
 Hash_Int::Hash_Int(int buckets, int modFactor_) //int hash constructors
 {
+    size = 0;
     numBuckets = buckets;
     modFactor = modFactor_;
     table = new vector<movie>[numBuckets];
@@ -60,6 +64,10 @@ vector<movie> Hash_Int::searchMoviesFromYear(int year)
     return toReturn;
 }
 
+int Hash_Int::getSize()
+{
+    return size;
+}
 
 void Hash_Int::displayHash() //remove later
 {
@@ -69,5 +77,5 @@ void Hash_Int::displayHash() //remove later
         for (auto x : table[i])
             cout << " --> " << x.getTitle();
         cout << endl << endl;
-        }
+    }
 }
