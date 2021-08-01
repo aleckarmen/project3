@@ -19,6 +19,7 @@ void trimFront(string &str);
 void delSpaces(string &str);
 int findMax(set<int> my_set);
 vector<string> SplitString(string s);
+void dataInsertionBST(string filepath, BST& tree);
 
 set<int>uniqueSums;
 map<string,int> uniques;
@@ -317,3 +318,66 @@ int findMax(set<int> my_set) // https://www.geeksforgeeks.org/find-maximum-and-m
 
     // return the maximum element
     return max_element;
+}
+void dataInsertionBST(string filepath, BST& tree) {//make filepath = "MovieListRatings.csv" !!!
+    ifstream file(filepath);//filepath from local files
+
+    vector<movie> movieCollection;
+
+    int count = 0;
+    if (file.is_open()) {
+        cout << "File is open" << endl;
+        string nul;
+        getline(file, nul);//gets rid of header
+        string line;
+
+        while (getline(file, line)) {
+            istringstream s(line);
+
+            string title;
+            getline(s, title, ',');
+
+
+            string stringYear;
+            getline(s, stringYear, ',');
+            int year = stoi(stringYear);
+
+            string date;
+            getline(s, date, ',');
+
+            vector<string> genreVect;
+            string genres;
+            getline(s, genres, ',');
+
+            genreVect = SplitString(genres);
+            for (int i = 0; i < genreVect.size(); i++) {
+                if (uniques.find(genreVect[i]) == uniques.end()) //if not in uniques, add it
+                {
+                    uniques.insert(genreVect[i]);
+                }
+            }
+
+            string durationString;
+            getline(s, durationString, ',');
+            trim(durationString);
+
+            int duration = stoi(durationString);
+
+            string country;
+            getline(s, country, ',');
+
+            string averageVotes;
+            getline(s, averageVotes, ',');
+            float avgVotes = stof(averageVotes);
+
+            string totVotes;
+            getline(s, totVotes, ',');
+            int totalVotes = stoi(totVotes);
+
+            movie currentMovie = movie(title, genres, date, country, duration, year, genreVect, totalVotes, avgVotes);
+            tree.insert(currentMovie, tree.root);
+            count++;
+        }
+        cout << "Amount of Movies in the BST: " << count << endl;
+    }
+}
