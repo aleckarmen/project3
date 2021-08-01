@@ -32,6 +32,8 @@ public:
     movie searchTitle(string title_, Node*& n);
     void searchGenre(string genre, Node*& n, vector<movie>& movieGenres);
     void searchYear(int year, Node*& n, vector<movie>& v);
+    void inorderPrint(Node*& n);
+    void searchGenreMinYear(string genre, int year, Node*& n, vector<movie>& m);
 };
 
 BST::BST()
@@ -101,4 +103,21 @@ void BST::inorderPrint(Node *&n) {//used for testing
 
     inorderPrint(n->right);
 
+}
+
+void searchGenreMinYear(string genre, int year, Node*& n, vector<movie>& m)
+{
+    if(n == nullptr)
+        return;
+
+    searchGenreMinYear(genre, year, Node*& n->left, vector<movie>& m);
+
+    if(n->movie.getYear() == year){
+        for(int i = 0; i < n->movie.getGenreVect().size(); i++){
+            if(n->movie.getGenreVect().at(i) == genre)
+                m.push_back(n->movie);
+        }
+    }
+    
+    searchGenreMinYear(genre, year, Node*& n->right, vector<movie>& m);
 }
