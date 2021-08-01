@@ -5,6 +5,7 @@
 #include <vector>
 #include "Movie.h"
 #include "Hash_Int.h"
+#include "BST.h"
 using namespace std;
 
 
