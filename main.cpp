@@ -24,7 +24,6 @@ int main() {
         cout << "File is open" << endl;
         string nul;
         getline(file,nul);//gets rid of header
-        getline(file,nul);
         string line;
 
 
@@ -49,6 +48,7 @@ int main() {
             vector<string> genreVect;
             string genres;
             getline(s,genres,',');
+
             genreVect = SplitString(genres);
 
             string durationString;
@@ -87,10 +87,12 @@ int main() {
     {
         cout << movieCollection[movieNum].getGenreVect()[i] << endl;
     }
-    cout << "First movie genre list:" << movieCollection[1].getGenreVect()[1] << endl;
+    cout << "First movie genre list:" << movieCollection[1].getGenreVect()[0] << endl;
     cout << "Last movie in list:" << movieCollection[movieCollection.size()-1].getGenre() << endl;
 
+
     Hash_Int tempHash = Hash_Int(50, 2000);
+
     for (int i = 0; i < 800; i++ )
     {
         tempHash.Insert( movieCollection[i*10]);
@@ -100,6 +102,30 @@ int main() {
 
     //cout << "What "
 
+
+    cout << "What is the oldest movie (minimum)" << endl;
+    int minYear;
+    cin >> minYear;
+
+
+    vector<movie> minMovieVect; //we will end up with a vector of all movies past that date
+    for (int i = minYear; i <= 2019; i++)
+    {
+        vector<movie> tempVect = tempHash.searchMoviesFromYear(i);
+
+        for (int i = 0; i < tempVect.size(); i++ )
+        {
+            minMovieVect.push_back(tempVect[i]);
+        }
+
+    }
+
+    cout << "All movies made past this date are: " << endl;
+
+    for (int i = 0; i< minMovieVect.size();i++)
+    {
+        cout << minMovieVect[i].getTitle() << ",made: " << minMovieVect[i].getYear() << endl;
+    };
 
 
     return 0;
@@ -117,10 +143,9 @@ vector<string> SplitString(string s)
         {
             v.push_back(temp);
             temp = "";
-            i++;
         }
         else
-            {
+        {
             temp.push_back(s[i]);//temp is item
         }
 
