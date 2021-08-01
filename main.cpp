@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <set>
 #include "Movie.h"
 #include "Hash_Int.h"
 using namespace std;
@@ -11,7 +12,10 @@ using namespace std;
 void trim(string &str);
 vector<string> SplitString(string s);
 
-int main() {
+set<string> uniques;
+
+int main()
+{
 
     ifstream file("MovieListRatings.csv");//filepath from local files
 
@@ -50,6 +54,13 @@ int main() {
             getline(s,genres,',');
 
             genreVect = SplitString(genres);
+            for (int i = 0; i < genreVect.size(); i++)
+            {
+                if (uniques.find(genreVect[i]) == uniques.end()) //if not in uniques, add it
+                {
+                    uniques.insert(genreVect[i]);
+                }
+            }
 
             string durationString;
             getline(s,durationString,',');
@@ -81,6 +92,8 @@ int main() {
 
     }
 
+    cout << "#unique genres " << uniques.size() << endl;
+
     cout << "Count: " << count << endl;
     int movieNum = 3;
     for (int i = 0; i < movieCollection[movieNum].getGenreVect().size(); i++)
@@ -91,16 +104,16 @@ int main() {
     cout << "Last movie in list:" << movieCollection[movieCollection.size()-1].getGenre() << endl;
 
 
-    Hash_Int tempHash = Hash_Int(50, 2000);
+    Hash_Int tempHash = Hash_Int(50, 50);
 
-    for (int i = 0; i < 800; i++ )
+    for (int i = 0; i < count; i++ )
     {
-        tempHash.Insert( movieCollection[i*10]);
+        tempHash.Insert( movieCollection[i]);
     }
-    tempHash.displayHash();
+    //tempHash.displayHash();
 
 
-    //cout << "What "
+    cout << "Size: " << tempHash.getSize() << endl;
 
 
     cout << "What is the oldest movie (minimum)" << endl;
@@ -109,7 +122,7 @@ int main() {
 
 
     vector<movie> minMovieVect; //we will end up with a vector of all movies past that date
-    for (int i = minYear; i <= 2019; i++)
+    for (int i = minYear; i <= 2020; i++)
     {
         vector<movie> tempVect = tempHash.searchMoviesFromYear(i);
 
