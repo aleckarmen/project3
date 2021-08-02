@@ -86,7 +86,7 @@ int Hash_Genre::getBuckets()
     return numBuckets;
 }
 
-int Hash_Genre::hashify(string genres) // can be one or more genres in form "A" or "A B C..." -need to delimit their input. Afterwards we'll work with "Comedy" or "ComedyRomance"
+int Hash_Genre::hashify(string genres) // can be one or more genres in form "A" or "A B C..."
 {
     delSpaces_(genres);
     int sum = findAsciiSum_(genres);
@@ -107,7 +107,6 @@ vector<movie> Hash_Genre::searchMoviesFromGenre(string genres) //can be one or m
 
     return temp;
 }
-
 
 void Hash_Genre::displayHash() //remove later
 {
