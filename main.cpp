@@ -20,7 +20,7 @@ void delSpaces(string &str);
 int findMax(set<int> my_set);
 vector<string> SplitString(string s);
 void dataInsertionBST(string filepath, BST& tree);
-
+void sortAverageVote(vector<movie>& m);
 set<int>uniqueSums;
 map<string,int> uniques;
 set<string> uniqueCombos;
@@ -379,5 +379,20 @@ void dataInsertionBST(string filepath, BST& tree) {//make filepath = "MovieListR
             count++;
         }
         cout << "Amount of Movies in the BST: " << count << endl;
+    }
+}
+
+void sortAverageVote(vector<movie>& m){
+
+    for(int i = 0; i < m.size(); i++)
+    {
+        for(int j = 0; m.size() - i - 1; j++)
+        {
+            if(m.at(j) > m.at(j+1)){
+                movie temp = m.at(j);
+                m.at(j) = m.at(j+1);
+                m.at(j+1) = temp;
+            }
+        }
     }
 }
