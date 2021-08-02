@@ -60,7 +60,7 @@ movie BST::searchTitle(string title_, Node*& n)
 
     if (title_ == node->movie.getTitle())
         return node->movie;
-    
+
     else if (title_ < node->movie.getTitle())
         return searchTitle(title_, node->left);
 
@@ -111,7 +111,7 @@ void searchGenreMinYear(string genre, int year, Node*& n, vector<movie>& m)
 {
     if(n == nullptr)
         return;
-    
+
     searchGenreMinYear(genre, year,n->left,m);
 
     if(n->movie.getYear() == year){
@@ -180,6 +180,6 @@ vector<movie> BST::topFiveByGenre(vector<string> criteria, int minYear, Node*& n
         }
         node = node->right;
     }
-   
+
     return topFive;
 }
