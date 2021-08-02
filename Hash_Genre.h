@@ -1,94 +1,70 @@
-#ifndef BESTFLIX_HASH_GENRE_H
-#define BESTFLIX_HASH_GENRE_H
-#endif //BESTFLIX_HASH_GENRE_H
+#ifndef BESTFLIX_HASH_H
+#define BESTFLIX_HASH_H
 #include "Movie.h"
-#include <string>
-#include <algorithm>
+
+#endif //BESTFLIX_HASH_H
+
 using namespace std;
 
-class Hash_Genre
+class Hash_Int
 {
 private:
     int numBuckets;
+    int modFactor;
     int size;
     vector<movie> *table;  //points to array that contains buckets
-
 public:
-    void displayHash(); //delete later
-
-    Hash_Genre(int buckets);
-    void delSpaces_(string &str)
-    {
-        str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
-
-    }
-    int findAsciiSum_(string str)
-    {
-        int sum = 0;
-
-        for (char c : str)
-            sum += c;
-        return sum;
-    }
+    void displayHash();
+    Hash_Int(int buckets, int modFactor);
     int getSize();
-    int getBuckets();
     void Insert(movie m);
-    int hashify(string genres);
-    vector<movie> searchMoviesFromGenre(string genre); //returns all movies made in that year
+    int hashify(int value);
+    vector<movie> searchMoviesFromYear(int year); //returns all movies made in that year
+
 };
 
-Hash_Genre::Hash_Genre(int buckets) //int hash constructors
+Hash_Int::Hash_Int(int buckets, int modFactor_) //int hash constructors
 {
     size = 0;
-    numBuckets = buckets+1;
+    numBuckets = buckets;
+    modFactor = modFactor_;
     table = new vector<movie>[numBuckets];
 }
 
-int Hash_Genre::getSize()
+int Hash_Int::getSize()
 {
     return size;
 }
 
-void Hash_Genre::Insert(movie m)
+void Hash_Int::Insert(movie m)
 {
-    string genreString = "";
-    for (int i = 0; i< m.getGenreVect().size(); i++)
-    {
-        genreString += (m.getGenreVect()[i]);
-    }
-
-    int placeToPutIt = hashify(genreString);
+    int placeToPutIt = hashify(m.getYear());
     table[placeToPutIt].push_back(m);
     size++;
 }
 
-int Hash_Genre::getBuckets()
+int Hash_Int::hashify(int year)
 {
-    return numBuckets;
+    return (year % numBuckets);
 }
 
-int Hash_Genre::hashify(string genres) // can be one or more genres in form "A" or "A B C..."
+vector<movie> Hash_Int::searchMoviesFromYear(int year)
 {
-    delSpaces_(genres);
-    int sum = findAsciiSum_(genres);
-
-    return sum;
-}
-
-vector<movie> Hash_Genre::searchMoviesFromGenre(string genres) //can be one or more genres will get them via hashify number returned
-{
-    vector<movie> movieswithDesiredGenres; //genre(s) in this case
-    vector<movie> temp = table[hashify(genres)]; //temp is a vector containing movies in that genre sum category
+    vector<movie> moviesInDesiredYear;
+    vector<movie> temp = table[hashify(year)];
 
     for(int i = 0; i< temp.size(); i++)
     {
-        movieswithDesiredGenres.push_back(temp[i]); //push back a vector of movies with that genre
+        if (temp[i].getYear() == year)
+        {
+            moviesInDesiredYear.push_back(temp[i]);
+        }
     }
-
-    return temp;
+    return moviesInDesiredYear;
 }
 
-void Hash_Genre::displayHash() //remove later
+
+void Hash_Int::displayHash() //remove later
 {
     for (int i = 0; i < numBuckets; i++)
     {
@@ -97,17 +73,4 @@ void Hash_Genre::displayHash() //remove later
             cout << " --> " << x.getTitle();
         cout << endl << endl;
     }
-}
-
-void delSpaces_(string &str)
-{
-    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
-}
-int findAsciiSum_(string str)
-{
-    int sum = 0;
-
-    for (char c : str)
-        sum += c;
-    return sum;
 }
