@@ -90,7 +90,7 @@ int main(){
         cin.ignore();
     }
     else if(option == 2){
-        cout << "Please enter year you want movies from" << endl;
+        cout << "Please enter the year you want movies from!" << endl;
         cin >> year;
     }
 
@@ -180,8 +180,7 @@ void trim(string &str)
     }
 }
 
-void dataInsertionBST(string filepath, BST& tree) 
-{
+void dataInsertionBST(string filepath, BST& tree) {
     ifstream file(filepath);//filepath from local files
 
     vector<movie> movieCollection;
@@ -287,8 +286,8 @@ int findLowestRatedMovieIndex(vector<movie> movieVect)
     return lowestIndex;
 }
 
-void sortAverageVote(vector<movie>& m)
-{
+void sortAverageVote(vector<movie>& m){
+
     for(int i = 0; i < m.size(); i++)
     {
         for(int j = 0; j < m.size() - i - 1; j++)
@@ -304,6 +303,7 @@ void sortAverageVote(vector<movie>& m)
 
 void insertAllToHash(Hash_Int &durationHash)
 {
+
     ifstream file("MovieListRatings.csv");//filepath from local files
 
     if (file.is_open())
