@@ -135,9 +135,28 @@ int main(){
 
     else if(option == 3)
     {
-        vector<movie> desiredGenreVect;
+        vector<movie> minMovieVect; //we will end up with a vector of all movies past that date
+        //auto genreHashS = high_resolution_clock::now();
+        for (int i = year; i <= 2020; i++)
+        {
+            vector<movie> tempVect = durationHash.searchMoviesFromYear(i);
+
+            for (int j = 0; j < tempVect.size(); j++ )
+            {
+                minMovieVect.push_back(tempVect[j]);
+            }
+        }
         auto genreHashS = high_resolution_clock::now();
-        desiredGenreVect = genreHash.searchMoviesFromGenre(genreInput);
+        Hash_Genre newGenreHash = Hash_Genre(2804);
+
+        for (int i = 0; i < minMovieVect.size(); i++)
+        {
+            newGenreHash.Insert(minMovieVect[i]);
+        }
+
+        vector<movie> desiredGenreVect;
+
+        desiredGenreVect = newGenreHash.searchMoviesFromGenre(genreInput);
         vector<movie> bestMovies = findBestMovies(desiredGenreVect, numMovies);
         auto genreHashE = high_resolution_clock::now();
 
@@ -405,9 +424,7 @@ void insertGenreHash(Hash_Genre &Hash)
             {
                 delSpaces(genreVect[i]);
                 builder+=genreVect[i];
-
             }
-
             string durationString;
             getline(s,durationString,',');
             trimFront(durationString);
@@ -428,7 +445,6 @@ void insertGenreHash(Hash_Genre &Hash)
             movie currentMovie = movie(title,genres,date,country,duration,year, genreVect, totalVotes, avgVotes);
 
             Hash.Insert(currentMovie);
-
         }
 
     }
