@@ -1,308 +1,166 @@
 #include <iostream>
-#include <iostream>
 #include <fstream>
+#include <chrono>
 #include <sstream>
 #include <vector>
 #include <set>
-#include <algorithm>
-#include <chrono>
-
-#include <map> //this is for assessing the data I wont use a map in our final implementation
-#include "Hash_Genre.h"
 #include "Movie.h"
 #include "Hash_Int.h"
 #include "BST.h"
+#include "Hash_Genre.h"
+#include <map>// this is for assessing data not used as main data structure
 using namespace std;
 using namespace std::chrono;
 
+void trim(string &str);
+vector<string> SplitString(string s);
+void dataInsertionBST(string filepath, BST& tree);
+int findLowestRatedMovieIndex(vector<movie> movieVect);
+vector<movie> findBestMovies(vector<movie> movieList, int numMoviesToSuggest);
+void sortAverageVote(vector<movie>& m);
+void insertGenreHash(Hash_Genre &Hash);
 int findAsciiSum(string str);
 vector<movie> findDesiredMoviesByGenre(Hash_Genre &genreHash, string inputGenres);
 void trimBack(std::string &s);
 void trimFront(string &str);
 void delSpaces(string &str);
-void sortAverageVote(vector<movie>& m);
+void printMovieVect(vector<movie>& m);
 int findMax(set<int> my_set);
-vector<string> SplitString(string s);
-int findLowestRatedMovieIndex(vector<movie> movieVect);
-vector<movie> findBestMovies(vector<movie> movieList, int numMoviesToSuggest);
 void insertAllToHash(Hash_Int &durationHash);
 vector<string> parseGenreInput(string input);
 void dataInsertionBST(string filepath, BST& tree);
-
-
 set<int>uniqueSums;
 map<string,int> uniques;
 set<string> uniqueCombos;
 
-int main()
-{
+int main(){
 
-    ifstream file("MovieListRatings.csv");//filepath from local files
+    BST movieTree;
+    Hash_Genre genreHash = Hash_Genre(2804); // NEED TO FIGURE OUT HOW TO CHANGE THIS TO GET ASCII STUFF
+    Hash_Int durationHash = Hash_Int(50, 50);
 
-
-    vector<movie> movieCollection;
-
-    int count = 0;
-    if (file.is_open())
-    {
-
-        string nul;
-        getline(file,nul);//gets rid of header
-        string line;
+    string file = "MovieListRatings.csv";
+    cout << "Welcome to BESTFLIX Movie Recommender!" << endl;
+    cout << "--------------------------------------" << endl;
 
 
+    auto startBST = high_resolution_clock::now();
+    dataInsertionBST(file,movieTree);
+    auto stopBST = high_resolution_clock::now();
 
-        while(getline(file, line))
-        {
-            //cout <<"Line #: " << count << endl;
-            istringstream s(line);
+    //auto durationBST = duration_cast<seconds>(stopBST - startBST);
+    std::chrono::duration<double> elapsedBST = stopBST - startBST;
+    cout << "Inserting all movies into the BST took " << elapsedBST.count() << " seconds" << endl;
+    cout << endl;
 
-            string title;
-            getline(s, title,',');
-            //cout << "Movie title(s) :" <<title <<"_" << endl;
-
-            string stringYear;
-            getline(s,stringYear,',');
-            //cout << "String year:" <<stringYear <<"_" << endl;
-            int year = stoi(stringYear);
-
-            string date;
-            getline(s,date,',');
-
-            vector<string> genreVect;
-            string genres;
-            getline(s,genres,',');
-
-
-
-            genreVect = SplitString(genres);
-
-
-            string builder = "";
-            for (int i = 0; i < genreVect.size();i++)
-            {
-                delSpaces(genreVect[i]);
-                builder+=genreVect[i];
-
-            }
-
-            uniqueCombos.insert(builder);
-
-
-            for (int i = 0; i < genreVect.size(); i++)
-            {
-                if (uniques.find(genreVect[i]) == uniques.end()) //if not in uniques, add it
-                {
-                    uniques[genreVect[i]] = 1; //this is the first occurence of this genre
-                }
-                else
-                {
-                    uniques[genreVect[i]] = uniques[genreVect[i]] +1;
-                }
-            }
-
-            //find a way to insert into unique combos without space character in anything
-
-
-
-            string durationString;
-            getline(s,durationString,',');
-            trimFront(durationString);
-            //cout << "durationString:" << durationString << "_" << endl;
-            int duration = stoi(durationString);
-
-            string country;
-            getline(s,country,',');
-
-            string averageVotes;
-            getline(s,averageVotes,',');
-            float avgVotes = stof(averageVotes);
-
-            string totVotes;
-            getline(s,totVotes,',');
-            int totalVotes = stoi(totVotes);
-
-
-
-            movie currentMovie = movie(title,genres,date,country,duration,year, genreVect, totalVotes, avgVotes);
-            count++;
-
-
-            movieCollection.push_back(currentMovie);//vector that stores the movie objects
-            //we can switch this with any insertion of a data structure I just have it at vector for now
-
-        }
-
-    }
-
-
-    Hash_Int durationHash = Hash_Int(100, 50);
-
-
-    auto start = high_resolution_clock::now();
-
+    auto startMap = high_resolution_clock::now();
     insertAllToHash(durationHash);
+    auto stopMap = high_resolution_clock::now();
 
-    auto stop = high_resolution_clock::now();
+    //auto durationMap = duration_cast<microseconds>(stopMap - startMap);
+    std::chrono::duration<double> elapsedHashYear = stopMap - startMap;
+    cout << "Inserting all movies into the Year Hash Table took " << elapsedHashYear.count() << " seconds" << endl;
+    cout << endl;
 
+    auto startGenreHash = high_resolution_clock::now();
+    insertGenreHash(genreHash);
+    auto stopGenreHash = high_resolution_clock::now();
 
-    auto duration = duration_cast<microseconds>(stop - start);
+    std::chrono::duration<double> elapsedGenreHash = stopGenreHash - startGenreHash;
+    cout << "Inserting all movies into the Genre Hash Table took " << elapsedGenreHash.count() << " seconds" << endl;
+    cout << endl;
 
-    cout <<"Duration to run this Hash Table Code: " <<duration.count() << endl << endl << endl;
+    int option = 0;
+    cout << "Which Data Structure would you like to use to recommend a movie?" << endl;
+    cout << "1. Binary Search Tree" << endl;
+    cout << "2. Year Hash Table" << endl;
+    cout << "3. Genre Hash Table" << endl;
+    cout << "4. Exit" << endl;
+    cin >> option;
 
+    cout << "How many movies?" << endl;
+    int numMovies = 0;
 
-    //durationHash.displayHash();
+    cin >> numMovies;
 
+    if(option == 4){
+        cout << "Thanks for using BestFlix!" << endl;
+        return 0;
+    }//close program
 
+    int year = 0;
 
+    if(option == 1 || option == 3) {
 
-
-    int sum = 0;
-    cout << "# of unique genres " << uniques.size() << endl;
-    for(auto f : uniques) {
-        sum+=f.second;
+        cout << "What is the year of the oldest movie you want to watch? (Minimum year)" << endl;
+        cin.ignore();
+        cin >> year;
+        cin.ignore();
+    }
+    else if(option == 2){
+        cout << "Please enter year you want movies from" << endl;
+        cin >> year;
 
     }
 
-    //cout << "specific unique combos from : " << uniqueCombos.size() <<"total."<< endl;
+    string genreInput = "";
+    if(option == 1 || option == 3){
 
-    for(auto f : uniqueCombos)
-    {
-
-        //cout << f << endl;
-        uniqueSums.insert(findAsciiSum(f));
-
+        cout << "What genre would you like to watch?" << endl;
+        getline(cin,genreInput);
     }
 
 
-    //cout << "number of unique sums for hashing from unique combos(hopefully 1257 is all, half would erase repitition): " << uniqueSums.size() << endl;
-    //cout << "These sums are: " << endl;
-    int lastsum =0;
-/*
-    for(auto f : uniqueSums)
-    {
-        cout << f << endl;
-    }
-*/
+    cout << "Here are the top " << numMovies <<" movies that follow the specified criteria: " << endl;
+    if(option == 1){//if user picks BST use BST search for top five
+        vector<string> genres = SplitString(genreInput);
+        auto bstTimerS = high_resolution_clock::now();
+        vector<movie> bstSearch = movieTree.topFiveByGenre(genres,year,movieTree.root, numMovies);
+        auto bstTimerE = high_resolution_clock::now();
+        sortAverageVote(bstSearch);
 
-    cout << "Number of movies stored: " << count << endl;
-
-
-    Hash_Int tempHash = Hash_Int(50, 50);
-
-    for (int i = 0; i < count; i++ )
-    {
-        tempHash.Insert( movieCollection[i]);
-    }
-    //tempHash.displayHash();
-    cout << "Table of everything by year Size: " << tempHash.getSize() << endl;
-
-
-
-
-
-    cout << "What is the year of the oldest movie you would watch?(minimum)" << endl;
-    int minYear;
-    cin >> minYear;
-    vector<movie> minMovieVect; //we will end up with a vector of all movies past that date
-    for (int i = minYear; i <= 2020; i++)
-    {
-        vector<movie> tempVect = tempHash.searchMoviesFromYear(i);
-
-        for (int i = 0; i < tempVect.size(); i++ )
-        {
-            minMovieVect.push_back(tempVect[i]);
-        }
+        printMovieVect(bstSearch);
+        auto bstDuration = duration_cast<microseconds>(bstTimerE - bstTimerS);
+        cout << endl;
+        cout << "BST search took " << bstDuration.count() << " microseconds!" << endl;
 
     }
-    /*
-    cout << "All movies made past this date are: " << endl;
-    for (int i = 0; i< minMovieVect.size();i++)
-    {
-        cout << minMovieVect[i].getTitle() << ",made: " << minMovieVect[i].getYear() << endl;
-    };
-    */
+    else if(option == 2){//if users picks Year Hash Table then search using that
+        vector<movie> IntHashMovies;
+        auto IntHashS = high_resolution_clock::now();
+        IntHashMovies = durationHash.searchMoviesFromYear(year);
 
-    auto it = findMax(uniqueSums);
-    int lastVal = it;
+        vector<movie> bestMovies = findBestMovies(IntHashMovies, numMovies);
 
-    cout << "Last val: " << lastVal << endl;
-    Hash_Genre genreHash = Hash_Genre(lastVal); //it will have uniqueSums# of buckets this unique sums might have to be based on new list of movies after thinning out via year
+        auto IntHashE = high_resolution_clock::now();
 
+        sortAverageVote(bestMovies);
+        printMovieVect(bestMovies);
+        auto yearDuration = duration_cast<microseconds>(IntHashE - IntHashS);
 
-    for (int i = 0; i < minMovieVect.size(); i++)
-    {
-        genreHash.Insert(minMovieVect[i]);
+        cout << endl;
+        cout << "Year Hash Table search took " << yearDuration.count() << " microseconds!"  << endl;
     }
 
+    else if(option == 3){
 
-    //genreHash.displayHash();
+        vector<movie> desiredGenreVect;
+        auto genreHashS = high_resolution_clock::now();
+        desiredGenreVect = genreHash.searchMoviesFromGenre(genreInput);
+        vector<movie> bestMovies = findBestMovies(desiredGenreVect, numMovies);
+        auto genreHashE = high_resolution_clock::now();
 
-    cout << "What single genre(s) are you interested in? Ex: Comedy,or Comedy Romance Action" << endl;
-    string inputGenre = "Comedy";
-    cin.ignore();
-    getline(cin, inputGenre);
+        auto genreDuration = duration_cast<microseconds>(genreHashE -genreHashS);
+        sortAverageVote(bestMovies);
+        printMovieVect(bestMovies);
 
-    cout << "inputGenre: " <<inputGenre<< endl;
-    vector<string> genresWanted;
-    genresWanted = SplitString(inputGenre);
-
-
-    //cout << "our genres too look for are" << endl;
-    for (int i = 0; i < genresWanted.size();i++)
-    {
-        cout << genresWanted[i] << endl;
+        cout << endl;
+        cout << "Genre Hash Table search took " << genreDuration.count() << " microseconds!" << endl;
     }
-
-
-    vector<movie> desiredGenreVect; //we will end up with a vector of all movies past that date
-
-
-    desiredGenreVect = genreHash.searchMoviesFromGenre(inputGenre);//temp vect will be the vector returned of all movies in a certain genre's bucket
-
-
-    //make a vector of the top 5 best rated movies, first initialize to the first 5.
-    vector<movie> topMovies;
-    /*
-    for (int i = 0; i < 5; i++)
-    {
-        topMovies.push_back(desiredGenreVect[i]);
-    }
-*/
-
-/*
-    for (int i = 0; i<desiredGenreVect.size(); i++)
-    {
-        cout << desiredGenreVect[i].getTitle() << ", rating: "<< desiredGenreVect[i].getAverageVotes() << endl;
-    }
-*/
-
-    vector<movie> bestMovies;
-    bestMovies = findBestMovies(desiredGenreVect, 5); //will find top 5 movies from indicated vector
-
-    cout << "I reccomend these movies!: " << endl; //
-    //maybe sort by rating first?
-    sortAverageVote(bestMovies);
-
-    for (int i = 0; i < bestMovies.size(); i++)
-    {
-        bestMovies[i].printMovie();
-    }
-
-
-
-
-
-    return 0;
 }
-
-
-
 
 vector<string> SplitString(string s)
 {
-
-
     vector<string> v;
     string temp = "";
     for(int i=0;i<s.length();++i){
@@ -316,13 +174,13 @@ vector<string> SplitString(string s)
         {
             temp.push_back(s[i]);//temp is item
         }
-
     }
     v.push_back(temp); //push item
 
     return v;
 }
-void trimFront(string &str)
+
+void trim(string &str)
 {
     size_t startpos = str.find_first_not_of(" \t");
     if( string::npos != startpos )
@@ -331,69 +189,109 @@ void trimFront(string &str)
     }
 }
 
-void trimBack(std::string &s)  //trim function from https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
-{
-    string temp = s;
-    temp.erase(std::find_if(temp.rbegin(), temp.rend(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }).base(), temp.end());
-}
+void dataInsertionBST(string filepath, BST& tree) {
+    ifstream file(filepath);//filepath from local files
 
-void delSpaces(string &str)
-{
-    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
-}
+    vector<movie> movieCollection;
+
+    int count = 0;
+    if (file.is_open()) {
+        //cout << "File is open" << endl;
+        string nul;
+        getline(file, nul);//gets rid of header
+        string line;
+
+        while (getline(file, line)) {
+            istringstream s(line);
+
+            string title;
+            getline(s, title, ',');
 
 
-int findAsciiSum(string str)
-{
-    int sum = 0;
+            string stringYear;
+            getline(s, stringYear, ',');
+            int year = stoi(stringYear);
 
-    for (char c : str)
-        sum += c;
-    return sum;
-}
+            string date;
+            getline(s, date, ',');
 
-int findMax(set<int> my_set) // https://www.geeksforgeeks.org/find-maximum-and-minimum-element-in-a-set-in-c-stl/
-{
+            vector<string> genreVect;
+            string genres;
+            getline(s, genres, ',');
 
-    // Get the maximum element
-    int max_element;
-    if (!my_set.empty())
-        max_element = *(my_set.rbegin());
+            genreVect = SplitString(genres);
 
-    // return the maximum element
-    return max_element;
+            for (int i = 0; i < genreVect.size(); i++) {
+                if (uniques.find(genreVect[i]) == uniques.end()) //if not in uniques, add it
+                {
+                    uniqueCombos.insert(genreVect[i]);
+                }
+            }
+
+            string durationString;
+            getline(s, durationString, ',');
+            trim(durationString);
+
+            int duration = stoi(durationString);
+
+            string country;
+            getline(s, country, ',');
+
+            string averageVotes;
+            getline(s, averageVotes, ',');
+            float avgVotes = stof(averageVotes);
+
+            string totVotes;
+            getline(s, totVotes, ',');
+            int totalVotes = stoi(totVotes);
+
+            movie currentMovie = movie(title, genres, date, country, duration, year, genreVect, totalVotes, avgVotes);
+            tree.insert(currentMovie, tree.root);
+            count++;
+        }
+        //cout << count << endl;
+    }
 }
 
 vector<movie> findBestMovies(vector<movie> movieList, int numMoviesToSuggest)  //returns top 5 movies of lowest rated out of our list
 {
     vector<movie> topMovies;
 
+    if (movieList.size() < numMoviesToSuggest)
+    {
+        return movieList;
+    }
 
     for (int i = 0; i < numMoviesToSuggest; i++)//fill top movies with first 5 available
     {
         topMovies.push_back(movieList[i]);
-        //cout << "Starting movie#" << i << ": "<< movieList[i].getTitle() << endl;
     }
-    int lowestIndex = findLowestRatedMovieIndex(topMovies); //find in dex of lowest rating movie in our list so far
+
+    int lowestIndex = 0;
+    for (int i = 0; i < topMovies.size(); i++) // find index of lowest rate one
+    {
+        if (topMovies[i].getAverageVotes() < topMovies[lowestIndex].getAverageVotes())
+        {
+            lowestIndex = i;
+        }
+    }
+
 
     for(int i = numMoviesToSuggest; i < movieList.size(); i++) //loop through all movies and assign higher ones into top movies
     {
-        if(movieList[i].getAverageVotes() > topMovies[lowestIndex].getAverageVotes() || (movieList[i].getAverageVotes() == topMovies[lowestIndex].getAverageVotes() && movieList[i].getNumVotes() > topMovies[lowestIndex].getNumVotes())) //if this movie in question is better rated
+        if(movieList[i].getAverageVotes() > topMovies[lowestIndex].getAverageVotes()) //if this movie in question is better rated
         {
             topMovies[lowestIndex] = movieList[i]; //replace lowest movie in topmovies with it
-            lowestIndex = findLowestRatedMovieIndex(topMovies); //update lowest index  to next lowest after switch
+            lowestIndex = findLowestRatedMovieIndex(topMovies); //set lowest index  to next lowest after switch
         }
     }
 
     return topMovies;
 }
 
-
-
 int findLowestRatedMovieIndex(vector<movie> movieVect)
 {
+
     int lowestIndex = 0;
     for (int i = 0; i < movieVect.size(); i++) // find index of lowest rate one
     {
@@ -402,7 +300,24 @@ int findLowestRatedMovieIndex(vector<movie> movieVect)
             lowestIndex = i;
         }
     }
+
+
     return lowestIndex;
+}
+
+void sortAverageVote(vector<movie>& m){
+
+    for(int i = 0; i < m.size(); i++)
+    {
+        for(int j = 0; j < m.size() - i - 1; j++)
+        {
+            if(m.at(j) < m.at(j+1)){
+                movie temp = m.at(j);
+                m.at(j) = m.at(j+1);
+                m.at(j+1) = temp;
+            }
+        }
+    }
 }
 
 void insertAllToHash(Hash_Int &durationHash)
@@ -468,9 +383,6 @@ void insertAllToHash(Hash_Int &durationHash)
             }
 
             //find a way to insert into unique combos without space character in anything
-
-
-
             string durationString;
             getline(s,durationString,',');
             trimFront(durationString);
@@ -499,76 +411,134 @@ void insertAllToHash(Hash_Int &durationHash)
     }
 }
 
-
-void sortAverageVote(vector<movie>& m)
+void insertGenreHash(Hash_Genre &Hash)
 {
 
-    for(int i = 0; i < m.size(); i++)
+    ifstream file("MovieListRatings.csv");//filepath from local files
+
+    if (file.is_open())
     {
-        for(int j = 0; j < m.size() - i - 1; j++)
-        {
-            if(m.at(j) < m.at(j+1)){
-                movie temp = m.at(j);
-                m.at(j) = m.at(j+1);
-                m.at(j+1) = temp;
-            }
-        }
-    }
-}
-
-void dataInsertionBST(string filepath, BST& tree) {//make filepath = "MovieListRatings.csv" !!!
-    ifstream file(filepath);//filepath from local files
-
-    vector<movie> movieCollection;
-
-    int count = 0;
-    if (file.is_open()) {
-        cout << "File is open" << endl;
         string nul;
-        getline(file, nul);//gets rid of header
+        getline(file,nul);//gets rid of header
         string line;
 
-        while (getline(file, line)) {
+
+
+        while(getline(file, line))
+        {
+            //cout <<"Line #: " << count << endl;
             istringstream s(line);
 
             string title;
-            getline(s, title, ',');
-
+            getline(s, title,',');
+            //cout << "Movie title(s) :" <<title <<"_" << endl;
 
             string stringYear;
-            getline(s, stringYear, ',');
+            getline(s,stringYear,',');
+            //cout << "String year:" <<stringYear <<"_" << endl;
             int year = stoi(stringYear);
 
             string date;
-            getline(s, date, ',');
+            getline(s,date,',');
 
             vector<string> genreVect;
             string genres;
-            getline(s, genres, ',');
+            getline(s,genres,',');
+
+
 
             genreVect = SplitString(genres);
 
-            string durationString;
-            getline(s, durationString, ',');
-            trimFront(durationString);
 
+            string builder = "";
+            for (int i = 0; i < genreVect.size();i++)
+            {
+                delSpaces(genreVect[i]);
+                builder+=genreVect[i];
+
+            }
+
+            uniqueCombos.insert(builder);
+
+
+            for (int i = 0; i < genreVect.size(); i++)
+            {
+                if (uniques.find(genreVect[i]) == uniques.end()) //if not in uniques, add it
+                {
+                    uniques[genreVect[i]] = 1; //this is the first occurence of this genre
+                }
+                else
+                {
+                    uniques[genreVect[i]] = uniques[genreVect[i]] +1;
+                }
+            }
+
+            //find a way to insert into unique combos without space character in anything
+            string durationString;
+            getline(s,durationString,',');
+            trimFront(durationString);
+            //cout << "durationString:" << durationString << "_" << endl;
             int duration = stoi(durationString);
 
             string country;
-            getline(s, country, ',');
+            getline(s,country,',');
 
             string averageVotes;
-            getline(s, averageVotes, ',');
+            getline(s,averageVotes,',');
             float avgVotes = stof(averageVotes);
 
             string totVotes;
-            getline(s, totVotes, ',');
+            getline(s,totVotes,',');
             int totalVotes = stoi(totVotes);
 
-            movie currentMovie = movie(title, genres, date, country, duration, year, genreVect, totalVotes, avgVotes);
-            tree.insert(currentMovie, tree.root);
-            count++;
+
+
+            movie currentMovie = movie(title,genres,date,country,duration,year, genreVect, totalVotes, avgVotes);
+
+            Hash.Insert(currentMovie);
+
         }
-        cout << "Amount of Movies in the BST: " << count << endl;
+
+    }
+}
+
+void delSpaces(string &str)
+{
+    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+}
+
+void trimFront(string &str)
+{
+    size_t startpos = str.find_first_not_of(" \t");
+    if( string::npos != startpos )
+    {
+        str = str.substr( startpos );
+    }
+}
+
+void trimBack(std::string &s)  //trim function from https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+{
+    string temp = s;
+    temp.erase(std::find_if(temp.rbegin(), temp.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), temp.end());
+}
+
+int findMax(set<int> my_set) // https://www.geeksforgeeks.org/find-maximum-and-minimum-element-in-a-set-in-c-stl/
+{
+
+    // Get the maximum element
+    int max_element;
+    if (!my_set.empty())
+        max_element = *(my_set.rbegin());
+
+    // return the maximum element
+    return max_element;
+}
+
+void printMovieVect(vector<movie>& m){
+    for(int i = 0; i < m.size(); i++)
+    {
+        m.at(i).printMovie();
     }
 }
