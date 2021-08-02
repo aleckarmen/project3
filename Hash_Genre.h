@@ -1,9 +1,7 @@
 #ifndef BESTFLIX_HASH_H
 #define BESTFLIX_HASH_H
 #include "Movie.h"
-
 #endif //BESTFLIX_HASH_H
-
 using namespace std;
 
 class Hash_Int
@@ -62,7 +60,6 @@ vector<movie> Hash_Int::searchMoviesFromYear(int year)
     }
     return moviesInDesiredYear;
 }
-
 
 void Hash_Int::displayHash() //remove later
 {
