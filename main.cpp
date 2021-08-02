@@ -106,7 +106,7 @@ int main(){
     {//if user picks BST use BST search for top five
         vector<string> genres = SplitString(genreInput);
         auto bstTimerS = high_resolution_clock::now();
-        vector<movie> bstSearch = movieTree.topFiveByGenre(genres,year,movieTree.root, numMovies);
+        vector<movie> bstSearch = movieTree.topFilms(genres,year,movieTree.root, numMovies);
         auto bstTimerE = high_resolution_clock::now();
         sortAverageVote(bstSearch);
 

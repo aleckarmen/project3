@@ -31,7 +31,7 @@ public:
     void inorderPrint(Node*& n);
     void searchGenreMinYear(string genre, int year, Node*& n, vector<movie>& m);
     bool contains(vector<movie>& v, movie& m);
-    vector<movie> topFiveByGenre(vector<string> criteria, int minYear, Node*& n, int numMovies);
+    vector<movie> topFilms(vector<string> criteria, int minYear, Node*& n, int numMovies);
 };
 
 BST::BST()
@@ -130,7 +130,7 @@ bool BST::contains(vector<movie>& v, movie& m)
     return false;
 }
 
-vector<movie> BST::topFiveByGenre(vector<string> criteria, int minYear, Node*& n, int numMovies)
+vector<movie> BST::topFilms(vector<string> criteria, int minYear, Node*& n, int numMovies)
 {
     vector<movie> topFive;
     stack<Node*> s;
