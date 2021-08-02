@@ -19,12 +19,7 @@ struct Node
 
 class BST
 {
-
-private:
-
-
 public:
-
     Node* root;
     int size;
     BST();
@@ -36,8 +31,7 @@ public:
     void inorderPrint(Node*& n);
     void searchGenreMinYear(string genre, int year, Node*& n, vector<movie>& m);
     bool contains(vector<movie>& v, movie& m);
-
-    vector<movie> topFiveByGenre(vector<string> criteria, int minYear, Node*& n);
+    vector<movie> topFiveByGenre(vector<string> criteria, int minYear, Node*& n, int numMovies);
 };
 
 BST::BST()
@@ -62,16 +56,15 @@ void BST::insert(movie& m, Node*& n)
 
 movie BST::searchTitle(string title_, Node*& n)
 {
-    // if (n == nullptr)
-    //     return nullptr;
     Node* node = n;
 
     if (title_ == node->movie.getTitle())
         return node->movie;
+    
     else if (title_ < node->movie.getTitle())
         return searchTitle(title_, node->left);
 
-        return searchTitle(title_, node->right);
+    return searchTitle(title_, node->right);
 
 }
 
@@ -118,7 +111,7 @@ void searchGenreMinYear(string genre, int year, Node*& n, vector<movie>& m)
 {
     if(n == nullptr)
         return;
-
+    
     searchGenreMinYear(genre, year,n->left,m);
 
     if(n->movie.getYear() == year){
@@ -127,7 +120,6 @@ void searchGenreMinYear(string genre, int year, Node*& n, vector<movie>& m)
                 m.push_back(n->movie);
         }
     }
-
     searchGenreMinYear(genre, year, n->right,m);
 }
 
@@ -138,9 +130,8 @@ bool BST::contains(vector<movie>& v, movie& m)
     return false;
 }
 
-vector<movie> BST::topFiveByGenre(vector<string> criteria, int minYear, Node*& n)
+vector<movie> BST::topFiveByGenre(vector<string> criteria, int minYear, Node*& n, int numMovies)
 {
-    int nodesVisited = 0;
     vector<movie> topFive;
     stack<Node*> s;
     Node* node = n;
@@ -148,7 +139,6 @@ vector<movie> BST::topFiveByGenre(vector<string> criteria, int minYear, Node*& n
     {
         while (node)
         {
-            nodesVisited++;
             s.push(node);
             node = node->left;
         }
@@ -166,9 +156,9 @@ vector<movie> BST::topFiveByGenre(vector<string> criteria, int minYear, Node*& n
             }
             if (count == criteria.size() && genres.size() == count && m.getYear() >= minYear)
             {
-                if (topFive.size() < 5)
+                if (topFive.size() < numMovies)
                     topFive.push_back(m);
-                else if (topFive.size() == 5)
+                else if (topFive.size() == numMovies)
                 {
                     float min = 10.1;
                     int minIndex;
@@ -190,6 +180,6 @@ vector<movie> BST::topFiveByGenre(vector<string> criteria, int minYear, Node*& n
         }
         node = node->right;
     }
-   // cout << "nodesVisited: " << nodesVisited << endl; test
+   
     return topFive;
 }
