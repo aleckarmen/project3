@@ -27,6 +27,7 @@ public:
     void printMovie();
     bool operator>(movie& rhs);
     bool operator==(movie& rhs);
+    bool operator<(movie &rhs);
 };
 
 movie::movie()
@@ -56,7 +57,6 @@ string movie::getDate()
 {
     return date;
 }
-
 
 string movie::getCountry()
 {
@@ -113,12 +113,11 @@ void movie::printMovie()
     cout << "---------------------------------------"<< endl;
 }
 
-// equality operator
 bool movie::operator==(movie& rhs)
 {
     if (this->title == rhs.getTitle())
         return true;
-    else 
+    else
         return false;
 }
 
@@ -128,3 +127,13 @@ bool movie::operator>(movie &rhs) {
     else
         return false;
 }
+
+bool movie::operator<(movie &rhs) {
+    if(this->averageVotes < rhs.getAverageVotes())
+        return true;
+    else
+        return false;
+}
+
+
+
