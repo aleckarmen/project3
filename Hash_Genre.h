@@ -7,6 +7,8 @@
 
 #endif //BESTFLIX_HASH_GENRE_H
 #include "Movie.h"
+#include <string>
+#include <algorithm>
 
 
 using namespace std;
@@ -39,17 +41,10 @@ public:
     int getSize();
     int getBuckets();
     void Insert(movie m);
-
-    // void delete(int key);
-
     int hashify(string genres);
-
     vector<movie> searchMoviesFromGenre(string genre); //returns all movies made in that year
-
-
-
+    
 };
-
 
 Hash_Genre::Hash_Genre(int buckets) //int hash constructors
 {
@@ -73,12 +68,9 @@ void Hash_Genre::Insert(movie m)
         genreString += (m.getGenreVect()[i]);
     }
 
-    //cout << "String, its genres and its genre Hash: " << genreString << ", " << hashify(genreString) << endl << endl; //this can see if some ascii sums accidentally overlap
-
     int placeToPutIt = hashify(genreString);
     table[placeToPutIt].push_back(m);
     size++;
-
 }
 
 int Hash_Genre::getBuckets()
@@ -103,8 +95,7 @@ vector<movie> Hash_Genre::searchMoviesFromGenre(string genres) //can be one or m
     {
         movieswithDesiredGenres.push_back(temp[i]); //push back a vector of movies with that genre
     }
-
-
+    
     return temp;
 }
 
