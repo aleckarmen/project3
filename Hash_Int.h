@@ -24,7 +24,7 @@ public:
 Hash_Int::Hash_Int(int buckets, int modFactor_) //int hash constructors
 {
     size = 0;
-    numBuckets = buckets;
+    numBuckets = buckets;//can vary around for best performance
     modFactor = modFactor_;
     table = new vector<movie>[numBuckets];
 }
@@ -36,8 +36,8 @@ int Hash_Int::getSize()
 
 void Hash_Int::Insert(movie m)
 {
-    int placeToPutIt = hashify(m.getYear());
-    table[placeToPutIt].push_back(m);
+    int placeToPutIt = hashify(m.getYear());//determine index of hash table by running hashify
+    table[placeToPutIt].push_back(m); //push it at that index
     size++;
 }
 
@@ -49,20 +49,20 @@ int Hash_Int::hashify(int year)
 vector<movie> Hash_Int::searchMoviesFromYear(int year)
 {
     vector<movie> moviesInDesiredYear;
-    vector<movie> temp = table[hashify(year)];
+    vector<movie> temp = table[hashify(year)]; //assign the ones that match to this
 
     for(int i = 0; i< temp.size(); i++)
     {
         if (temp[i].getYear() == year)
         {
-            moviesInDesiredYear.push_back(temp[i]);
+            moviesInDesiredYear.push_back(temp[i]);//this is where the checking for collisions happends i.e. 2019 and 1919 would be distinguished
         }
     }
     return moviesInDesiredYear;
 }
 
 
-void Hash_Int::displayHash() //remove later
+void Hash_Int::displayHash() //
 {
     for (int i = 0; i < numBuckets; i++)
     {
