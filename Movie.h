@@ -121,3 +121,25 @@ bool movie::operator==(movie& rhs)
     else 
         return false;
 }
+
+bool movie::operator>(movie &rhs) {
+    if(this->averageVotes > rhs.getAverageVotes())
+        return true;
+    else
+        return false;
+}
+
+void movie::sortAverageVote(vector<movie>& m){
+
+    for(int i = 0; i < m.size(); i++)
+    {
+        for(int j = 0; m.size() - i - 1; j++)
+        {
+            if(m.at(j) > m.at(j+1)){
+                movie temp = m.at(j);
+                m.at(j) = m.at(j+1);
+                m.at(j+1) = temp;
+            }
+        }
+    }
+}
