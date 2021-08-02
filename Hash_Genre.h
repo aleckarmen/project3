@@ -14,15 +14,15 @@ private:
     vector<movie> *table;  //points to array that contains buckets
 
 public:
-    void displayHash(); //delete later
+    void displayHash();
 
     Hash_Genre(int buckets);
-    void delSpaces_(string &str)
+    void delSpaces_(string &str) //this will help with parsing things
     {
         str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
 
     }
-    int findAsciiSum_(string str)
+    int findAsciiSum_(string str) //use this to get unique sums for our hash table placement
     {
         int sum = 0;
 
@@ -40,7 +40,7 @@ public:
 Hash_Genre::Hash_Genre(int buckets) //int hash constructors
 {
     size = 0;
-    numBuckets = buckets+1;
+    numBuckets = buckets+1; //array index needs to line up with sum so we add +1
     table = new vector<movie>[numBuckets];
 }
 
@@ -51,14 +51,14 @@ int Hash_Genre::getSize()
 
 void Hash_Genre::Insert(movie m)
 {
-    string genreString = "";
+    string genreString = ""; //start with empty string
     for (int i = 0; i< m.getGenreVect().size(); i++)
     {
-        genreString += (m.getGenreVect()[i]);
+        genreString += (m.getGenreVect()[i]); //add up  ascii sum for genres up this movie
     }
 
     int placeToPutIt = hashify(genreString);
-    table[placeToPutIt].push_back(m);
+    table[placeToPutIt].push_back(m); //put it in table based on ascii sum
     size++;
 }
 
@@ -97,17 +97,4 @@ void Hash_Genre::displayHash() //remove later
             cout << " --> " << x.getTitle();
         cout << endl << endl;
     }
-}
-
-void delSpaces_(string &str)
-{
-    str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
-}
-int findAsciiSum_(string str)
-{
-    int sum = 0;
-
-    for (char c : str)
-        sum += c;
-    return sum;
 }
