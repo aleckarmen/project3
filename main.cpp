@@ -106,7 +106,7 @@ int main(){
     {//if user picks BST use BST search for top five
         vector<string> genres = SplitString(genreInput);
         auto bstTimerS = high_resolution_clock::now();
-        vector<movie> bstSearch = movieTree.topFilms(genres,year,movieTree.root, numMovies);
+        vector<movie> bstSearch = movieTree.topFiveByGenre(genres,year,movieTree.root, numMovies);
         auto bstTimerE = high_resolution_clock::now();
         sortAverageVote(bstSearch);
 
@@ -146,7 +146,7 @@ int main(){
                 minMovieVect.push_back(tempVect[j]);
             }
         }
-        auto genreHashS = high_resolution_clock::now();
+
         Hash_Genre newGenreHash = Hash_Genre(2804);
 
         for (int i = 0; i < minMovieVect.size(); i++)
@@ -154,6 +154,7 @@ int main(){
             newGenreHash.Insert(minMovieVect[i]);
         }
 
+        auto genreHashS = high_resolution_clock::now();
         vector<movie> desiredGenreVect;
 
         desiredGenreVect = newGenreHash.searchMoviesFromGenre(genreInput);
@@ -424,7 +425,9 @@ void insertGenreHash(Hash_Genre &Hash)
             {
                 delSpaces(genreVect[i]);
                 builder+=genreVect[i];
+
             }
+
             string durationString;
             getline(s,durationString,',');
             trimFront(durationString);
@@ -445,6 +448,7 @@ void insertGenreHash(Hash_Genre &Hash)
             movie currentMovie = movie(title,genres,date,country,duration,year, genreVect, totalVotes, avgVotes);
 
             Hash.Insert(currentMovie);
+
         }
 
     }
