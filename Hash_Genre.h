@@ -37,7 +37,7 @@ public:
         return sum;
     }
     int getSize();
-
+    int getBuckets();
     void Insert(movie m);
 
     // void delete(int key);
@@ -54,7 +54,7 @@ public:
 Hash_Genre::Hash_Genre(int buckets) //int hash constructors
 {
     size = 0;
-    numBuckets = buckets;
+    numBuckets = buckets+1;
 
     table = new vector<movie>[numBuckets];
 }
@@ -81,6 +81,11 @@ void Hash_Genre::Insert(movie m)
 
 }
 
+int Hash_Genre::getBuckets()
+{
+    return numBuckets;
+}
+
 int Hash_Genre::hashify(string genres) // can be one or more genres in form "A" or "A B C..." -need to delimit their input. Afterwards we'll work with "Comedy" or "ComedyRomance"
 {
     delSpaces_(genres);
@@ -92,15 +97,15 @@ int Hash_Genre::hashify(string genres) // can be one or more genres in form "A" 
 vector<movie> Hash_Genre::searchMoviesFromGenre(string genres) //can be one or more genres will get them via hashify number returned
 {
     vector<movie> movieswithDesiredGenres; //genre(s) in this case
-    vector<movie> temp = table[hashify(genres)];
+    vector<movie> temp = table[hashify(genres)]; //temp is a vector containing movies in that genre sum category
 
     for(int i = 0; i< temp.size(); i++)
     {
-            movieswithDesiredGenres.push_back(temp[i]); //push back a vector of movies with that genre
+        movieswithDesiredGenres.push_back(temp[i]); //push back a vector of movies with that genre
     }
 
 
-    return movieswithDesiredGenres;
+    return temp;
 }
 
 
