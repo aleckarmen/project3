@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <stack>
+#include <algorithm>
 #include "Movie.h"
 
 struct Node
@@ -25,7 +26,7 @@ private:
 public:
     
     Node* root;
-
+    int size;
     BST();
     movie* getMovie();
     void insert(movie& m, Node*& n);
@@ -36,17 +37,22 @@ public:
     void searchGenreMinYear(string genre, int year, Node*& n, vector<movie>& m);
     bool contains(vector<movie*>& v, movie*& m);
     vector<movie*> topFiveByGenre(string genre, int minYear, Node*& n);
+    vector<movie*> topFiveByGenre(vector<string> criteria, int minYear, Node*& n);
 };
 
 BST::BST()
 {
     root = nullptr;
+    size = 0;
 }
 
 void BST::insert(movie& m, Node*& n)
 {
     if (n == nullptr)
+    {
         n = new Node(m);
+        size++;
+    }
 
     else if (m.getTitle() < n->movie.getTitle())
         insert(m, n->left);
@@ -131,8 +137,9 @@ bool BST::contains(vector<movie*>& v, movie*& m)
     return false;
 }
 
-vector<movie*> BST::topFiveByGenre(string genre, int minYear, Node*& n)
+vector<movie*> BST::topFiveByGenre(vector<string> criteria, int minYear, Node*& n)
 {
+    int nodesVisited = 0;
     vector<movie*> topFive;
     stack<Node*> s;
     Node* node = n;
@@ -140,36 +147,48 @@ vector<movie*> BST::topFiveByGenre(string genre, int minYear, Node*& n)
     {
         while (node) 
         {
+            nodesVisited++;
             s.push(node);
             node = node->left;
         }
         node = s.top();
         s.pop();
         movie* m = &node->movie;
-        if (m->getYear() >= minYear && m->getGenre() == genre) //m->getGenre().find(genre) != string::npos)
+        if (m->getYear() >= minYear)
         {
-            if (topFive.size() < 5)
-                topFive.push_back(m);
-            else if (topFive.size() == 5)
+            int count = 0;
+            vector<string> genres = m->getGenreVect();
+            for (int i = 0; i < genres.size(); i++)
             {
-                float min = 10.1;
-                int minIndex;
-                for (int i = 0; i < topFive.size(); i++)
+                if (find(criteria.begin(), criteria.end(), genres[i]) != criteria.end())
+                    count++;
+            }
+            if (count == criteria.size() && genres.size() == count && m->getYear() >= minYear)
+            {
+                if (topFive.size() < 5)
+                    topFive.push_back(m);
+                else if (topFive.size() == 5)
                 {
-                    if (min > topFive[i]->getAverageVotes())
+                    float min = 10.1;
+                    int minIndex;
+                    for (int i = 0; i < topFive.size(); i++)
                     {
-                        min = topFive[i]->getAverageVotes();
-                        minIndex = i;
+                        if (min > topFive[i]->getAverageVotes())
+                        {
+                            min = topFive[i]->getAverageVotes();
+                            minIndex = i;
+                        }
                     }
                     if (m->getAverageVotes() > topFive[minIndex]->getAverageVotes())
                     {
                         if (!contains(topFive, m))
                             topFive[minIndex] = m;
                     }
-                }
-            }   
+                }   
+            }
         }
         node = node->right;
     }
+    cout << "nodesVisited: " << nodesVisited << endl;
     return topFive;
 }
