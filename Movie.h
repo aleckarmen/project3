@@ -25,7 +25,7 @@ public:
     int getNumVotes();
     float getAverageVotes();
     void printMovie();
-
+    bool operator>(movie& rhs);
     bool operator==(movie& rhs);
 };
 
