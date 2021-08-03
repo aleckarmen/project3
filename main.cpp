@@ -29,15 +29,15 @@ void dataInsertionBST(string filepath, BST& tree);
 
 
 int main(){
-
+    //create the data structures
     BST movieTree;
-    Hash_Genre genreHash = Hash_Genre(2804);
+    Hash_Genre genreHash = Hash_Genre(2804); // NEED TO FIGURE OUT HOW TO CHANGE THIS TO GET ASCII STUFF
     Hash_Int durationHash = Hash_Int(50, 50);
-
+    //menu start
     string file = "MovieListRatings.csv";
     cout << "Welcome to BESTFLIX Movie Recommender!" << endl;
     cout << "--------------------------------------" << endl;
-
+    //times the insertion of data into the data structures
     auto startBST = high_resolution_clock::now();
     dataInsertionBST(file,movieTree);
     auto stopBST = high_resolution_clock::now();
@@ -82,7 +82,7 @@ int main(){
 
     int year = 0;
 
-    if(option == 1 || option == 3)
+    if(option == 1 || option == 3)//search via genre if choosen
     {
         cout << "What is the year of the oldest movie you want to watch? (Minimum year)" << endl;
         cin.ignore();
@@ -95,7 +95,7 @@ int main(){
     }
 
     string genreInput = "";
-    if(option == 1 || option == 3)
+    if(option == 1 || option == 3)//insert genres wanted
     {
         cout << "What genre would you like to watch?" << endl;
         getline(cin,genreInput);
@@ -105,6 +105,7 @@ int main(){
     if(option == 1)
     {//if user picks BST use BST search for top five
         vector<string> genres = SplitString(genreInput);
+        //times the search of the bst
         auto bstTimerS = high_resolution_clock::now();
         vector<movie> bstSearch = movieTree.topFilms(genres,year,movieTree.root, numMovies);
         auto bstTimerE = high_resolution_clock::now();
@@ -152,13 +153,13 @@ int main(){
         for (int i = 0; i < minMovieVect.size(); i++)
         {
             newGenreHash.Insert(minMovieVect[i]);
-        }
+        }//gets the new hash function full of the genre and year specified
 
         auto genreHashS = high_resolution_clock::now();
         vector<movie> desiredGenreVect;
 
         desiredGenreVect = newGenreHash.searchMoviesFromGenre(genreInput);
-        vector<movie> bestMovies = findBestMovies(desiredGenreVect, numMovies);
+        vector<movie> bestMovies = findBestMovies(desiredGenreVect, numMovies);//runs our search algorithm for the best movies
         auto genreHashE = high_resolution_clock::now();
 
         auto genreDuration = duration_cast<microseconds>(genreHashE -genreHashS);
@@ -170,7 +171,7 @@ int main(){
     }
 }
 
-vector<string> SplitString(string s)
+vector<string> SplitString(string s)//used to organize the genre data into a vector
 {
     vector<string> v;
     string temp = "";
@@ -191,7 +192,7 @@ vector<string> SplitString(string s)
     return v;
 }
 
-void trim(string &str)
+void trim(string &str)//used to get rid of stuff in a string
 {
     size_t startpos = str.find_first_not_of(" \t");
     if( string::npos != startpos )
@@ -200,7 +201,7 @@ void trim(string &str)
     }
 }
 
-void dataInsertionBST(string filepath, BST& tree) {
+void dataInsertionBST(string filepath, BST& tree) {//inserts movie data in our bst data structure
     ifstream file(filepath);//filepath from local files
 
     vector<movie> movieCollection;
@@ -292,7 +293,7 @@ vector<movie> findBestMovies(vector<movie> movieList, int numMoviesToSuggest)  /
     return topMovies;
 }
 
-int findLowestRatedMovieIndex(vector<movie> movieVect)
+int findLowestRatedMovieIndex(vector<movie> movieVect)//helper function for one above
 {
     int lowestIndex = 0;
     for (int i = 0; i < movieVect.size(); i++) // find index of lowest rate one
@@ -306,7 +307,7 @@ int findLowestRatedMovieIndex(vector<movie> movieVect)
     return lowestIndex;
 }
 
-void sortAverageVote(vector<movie>& m){
+void sortAverageVote(vector<movie>& m){//sorts the movie vector by ratings
 
     for(int i = 0; i < m.size(); i++)
     {
@@ -321,7 +322,7 @@ void sortAverageVote(vector<movie>& m){
     }
 }
 
-void insertAllToHash(Hash_Int &durationHash)
+void insertAllToHash(Hash_Int &durationHash)//insert movie objects into hash function
 {
 
     ifstream file("MovieListRatings.csv");//filepath from local files
@@ -454,7 +455,7 @@ void insertGenreHash(Hash_Genre &Hash)
     }
 }
 
-void delSpaces(string &str)
+void delSpaces(string &str)//remove spaces from a string
 {
     str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
 }
@@ -468,7 +469,7 @@ void trimFront(string &str)
     }
 }
 
-void printMovieVect(vector<movie>& m){
+void printMovieVect(vector<movie>& m){//prints movies in a given vector
     for(int i = 0; i < m.size(); i++)
     {
         m.at(i).printMovie();
