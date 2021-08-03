@@ -40,7 +40,7 @@ BST::BST()
     size = 0;
 }
 
-void BST::insert(movie& m, Node*& n)
+void BST::insert(movie& m, Node*& n) // recursive BST insert based on movie titles
 {
     if (n == nullptr)
     {
@@ -51,7 +51,7 @@ void BST::insert(movie& m, Node*& n)
     else if (m.getTitle() < n->movie.getTitle())
         insert(m, n->left);
     else if (m.getTitle() >= n->movie.getTitle())
-        insert(m, n->right); // changed from left to right
+        insert(m, n->right);
 }
 
 movie BST::searchTitle(string title_, Node*& n)
@@ -132,10 +132,10 @@ bool BST::contains(vector<movie>& v, movie& m)
 
 vector<movie> BST::topFilms(vector<string> criteria, int minYear, Node*& n, int numMovies)
 {
-    vector<movie> topFive;
+    vector<movie> topFilms_; // vector of all movies matching genre/year criteria
     stack<Node*> s;
     Node* node = n;
-    while (node || !s.empty())
+    while (node || !s.empty()) // iterative inorder traversal
     {
         while (node)
         {
@@ -145,35 +145,35 @@ vector<movie> BST::topFilms(vector<string> criteria, int minYear, Node*& n, int 
         node = s.top();
         s.pop();
         movie m = node->movie;
-        if (m.getYear() >= minYear)
+        if (m.getYear() >= minYear) // if minYear criteria is met
         {
             int count = 0;
-            vector<string> genres = m.getGenreVect();
+            vector<string> genres = m.getGenreVect(); // vector of genres for this node
             for (int i = 0; i < genres.size(); i++)
             {
-                if (find(criteria.begin(), criteria.end(), genres[i]) != criteria.end())
-                    count++;
+                if (find(criteria.begin(), criteria.end(), genres[i]) != criteria.end()) // iterate thru node's list of genres
+                    count++;    // iterate count for every one of node's genre that matches a criteria genre
             }
-            if (count == criteria.size() && genres.size() == count && m.getYear() >= minYear)
+            if (count == criteria.size() && genres.size() == count && m.getYear() >= minYear) // if node meets all criteria
             {
-                if (topFive.size() < numMovies)
-                    topFive.push_back(m);
-                else if (topFive.size() == numMovies)
+                if (topFilms_.size() < numMovies) // if vector hasn't been filled, add node's movie
+                    topFilms_.push_back(m); 
+                else if (topFilms_.size() == numMovies) // if vector is full
                 {
                     float min = 10.1;
-                    int minIndex;
-                    for (int i = 0; i < topFive.size(); i++)
+                    int minIndex;                   
+                    for (int i = 0; i < topFilms_.size(); i++) // iterate thru current topFilms_ and find lowest rated movie
                     {
-                        if (min > topFive[i].getAverageVotes())
+                        if (min > topFilms_[i].getAverageVotes())
                         {
-                            min = topFive[i].getAverageVotes();
+                            min = topFilms_[i].getAverageVotes();
                             minIndex = i;
                         }
                     }
-                    if (m.getAverageVotes() > topFive[minIndex].getAverageVotes())
+                    if (m.getAverageVotes() > topFilms_[minIndex].getAverageVotes()) // check to see if node's movie is higher rated than lowest rated 
                     {
                         if (!contains(topFive, m))
-                            topFive[minIndex] = m;
+                            topFilms_[minIndex] = m;        // replace lowest rated movie with node
                     }
                 }
             }
