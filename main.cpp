@@ -31,7 +31,7 @@ void dataInsertionBST(string filepath, BST& tree);
 int main(){
 
     BST movieTree;
-    Hash_Genre genreHash = Hash_Genre(2804); // NEED TO FIGURE OUT HOW TO CHANGE THIS TO GET ASCII STUFF
+    Hash_Genre genreHash = Hash_Genre(2804);
     Hash_Int durationHash = Hash_Int(50, 50);
 
     string file = "MovieListRatings.csv";
